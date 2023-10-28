@@ -1,0 +1,104 @@
+---
+title: IP Command Use
+description: Commonly used ip commands
+slug: commonly-used-ip-commands
+date: 2023-10-28
+type: Post
+---
+
+# IP command use
+
+##### Most `ip` commands follow this format
+
+```shell
+ip [options] OBJECT COMMAND
+```
+
+##### To display information about specific interface, append the name of the interface to the end of the command.
+
+```bash
+kay_wu@sonic-server-02:~$ ip addr show br2
+7: br2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether ac:1f:6b:37:51:a2 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.3.46/16 brd 192.168.255.255 scope global br2
+       valid_lft forever preferred_lft forever
+    inet6 fe80::40b:e7ff:fe42:1c30/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+##### The parameters of `-br` can simplify the display to the state and IP addresses.
+
+```bash
+kay_wu@sonic-server-02:~$ ip -br addr show br2
+br2              UP             192.168.3.46/16 fe80::40b:e7ff:fe42:1c30/64
+```
+
+#### Remove
+
+##### To remove an address from interface, use the `ip addr delete` command.
+
+```bash
+// format
+// sudo ip addr delte <ip address/subnet> dev <interface>
+
+sudo ip addr delte 192.168.8.8/16 dev eth0
+```
+
+##### To configure the address as a broadcasr address, use the keyword `brd`
+
+```bash
+// format
+// suod ip addr add <ip address>  brd + dev <interface>
+
+sudo ip addr add 192.168.6.255 brd + dev eth0
+```
+
+##### View the Network interfaces
+
+```bash
+ip link show
+ip link show <specific interfaces>
+```
+
+##### Change the status of a network interface
+
+```bash
+// format
+// sudo ip link set <interface> down/up
+
+sudo ip link set eth0 down
+sudo ip link set eth0 up
+```
+
+##### Change the maximum transmission unit `MTU` size for the interface
+
+```
+// format
+// <NUM> is about 0-1500 -> normal Ethernet speend (disable Jumbo frame)
+// sudo ip ink set mtu <NUM> <interface>
+
+sudo ip link set mtu 1300 eth0
+```
+
+##### Add and Delete Routes
+
+```bash
+// format
+// sudo ip route add/delete <ip address> dev <interface>
+
+sudo ip route add 192.168.0.254 dev eth0  // add
+sudo ip route delete 192.168.0.254 dev eth0  // delete
+```
+
+##### Use `ip route` command to confirm the route has been added
+
+```bash
+❯ ip route
+default via 172.20.10.1 dev en9
+default via 172.20.10.1 dev en9
+10.100.1.76/32 via 10.212.134.101 dev utun7
+```
+
+### Reference
+
+1. ##### <a href="https://www.linode.com/docs/guides/how-to-use-the-linux-ip-command/">How to use the linux ip command</a>
